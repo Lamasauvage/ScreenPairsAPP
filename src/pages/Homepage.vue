@@ -239,6 +239,7 @@ export default {
       suggestions1: [],
       suggestions2: [],
       results: [],
+      searchAttempted: false,
       loading: false,
       actorImages: {
         actor1: '',
@@ -296,6 +297,7 @@ export default {
       this.loading = true;
       this.results = [];
       this.actorImages = { actor1: '', actor2: '' };
+      this.searchAttempted = true;
 
       try {
         const res = await axios.get(`http://127.0.0.1:8000/api/common-movies/`, {
@@ -319,26 +321,6 @@ export default {
           ? `https://image.tmdb.org/t/p/w200${path}`
           : 'https://placehold.co/200x300?text=No+Image';
     },
-    async fetchPopularDuos() {
-      try {
-        const res = await axios.get('http://127.0.0.1:8000/api/popular-duos/');
-        this.popularDuos = res.data.results.map(duo => {
-          const filteredMovies = (duo.common_movies || []).filter(movie => {
-            const genres = movie.genres || [];
-            return !genres.some(g => g.id === 99);
-          });
-
-          return {
-            ...duo,
-            common_movies: filteredMovies,
-            common_movies_count: filteredMovies.length,
-          };
-        });
-      } catch (error) {
-        console.error('Erreur récupération duos populaires :', error);
-      }
-    }
-
   },
 };
 </script>
